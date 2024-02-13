@@ -1,0 +1,42 @@
+import http.client
+
+host = input("Inserire host/IP del sistema target: ")
+port = input("Inserire la porta del sistema target (default: 80): ")
+
+if port == "":
+    port = 80
+
+try:
+    connection = http.client.HTTPConnection(host, port)
+
+    # Puoi specificare eventuali dati da inviare con la richiesta POST
+    payload = "Dati da inviare con il metodo POST"
+
+    connection.request('POST', '/', body=payload)
+    response = connection.getresponse()
+
+    connection1 = http.client.HTTPConnection(host, port)
+    
+    connection1.request('GET', '/')
+    response1 = connection1.getresponse()
+
+    if response.status == 200:
+        print("La richiesta POST è stata effettuata con successo.")
+        print("Enumerazione metodo: ", response.status)
+        
+#da vedere l'else per capire se funziona come risposta del metodo utilizzato che la porta non accetta        
+    else:
+        print("La richiesta POST non è stata accettata. Codice di stato: {response.status}")
+        
+    if response1.status == 200:
+        print("La richiesta GET è stata effettuata con successo.")
+        print("Enumerazione metodo: ", response1.status)
+        
+#da vedere l'else per capire se funziona come risposta del metodo utilizzato che la porta non accetta        
+    else:
+        print("La richiesta GET non è stata accettata. Codice di stato: {response1.status}")
+
+    connection.close()
+
+except ConnectionRefusedError:
+    print("Connessione fallita")

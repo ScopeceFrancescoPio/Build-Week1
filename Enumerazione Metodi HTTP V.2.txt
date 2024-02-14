@@ -1,0 +1,50 @@
+#Importa Librerie http.client necessaria al programma per la comprensione dei comandi utilizzati al suo interno
+import http.clientù
+#Importa la libreria pyfiglet a fini puramente estetici
+import pyfiglet
+
+ascii_banner = pyfiglet.figlet_format("ENUMERAZIONE METODI HTTP")
+print(ascii_banner)
+
+while True:
+    host = input("Inserisci un indirizzo IP del sistema target: ")
+
+    # Verifica se l'input contiene solo cifre e punti (formato IP)
+    if all(c.isdigit() or c == '.' for c in host) and host.count('.') == 3:
+        break
+    else:
+        print("Errore: Inserisci un indirizzo IP valido. Riprova.")
+
+while True:
+    port = input("Inserisci la porta del sistema target (default: 80): ")
+
+    # Verifica se l'input contiene solo cifre
+    if port.isdigit():
+        port = int(port)
+        break
+    else:
+        print("Errore: Inserisci un numero di porta valido. Riprova.")
+
+#Prova a stabilire una connessione con il Server Host utilizzando sequenzialmente i metodi POST, GET ed HEAD
+try:
+    connection = http.client.HTTPConnection(host, port)
+    payload = "Dati da inviare con il metodo POST"
+    connection.request('POST', '/', body=payload)
+    response = connection.getresponse()
+    print("Richiesta effettuata con successo.")
+    print("Risposta POST dal server:",response.status, response.reason)
+    connection1 = http.client.HTTPConnection(host, port)
+    connection1.request('GET', '/')
+    response1 = connection1.getresponse()
+    print("Richiesta effettuata con successo.")
+    print("Risposta GET dal server:",response1.status, response1.reason)
+    connection2 = http.client.HTTPConnection(host, port)
+    connection2.request('HEAD', '/')
+    response2 = connection2.getresponse()
+    print("Richiesta effettuata con successo.")
+    print("Risposta HEAD dal server:",response2.status, response2.reason)
+
+    connection.close()
+
+except ConnectionError:
+    print("Connessione fallita")

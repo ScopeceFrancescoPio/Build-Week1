@@ -1,0 +1,36 @@
+import pyfiglet
+import sys
+import socket
+from datetime import datetime
+
+#utilizziamo una funzione della libreria pyfiglet per mettere in evidenza la scritta port scanner
+ascii_banner= pyfiglet.figlet_format("PORT SCANNER")
+print(ascii_banner)
+#diamo una possibilità all'utente di inserire l'IP e il range delle porte che vuole analizzare
+target = input(str("Target IP: "))
+porta_iniziale = int(input("inserisci la porta di inizio range:")) 
+porta_finale = int(input("inserisci la porta di fine range:")) 
+#creiamo un'interfaccia grafica migliore e più ordinata andando a specificare anche la data in cui si effettua l'operazione
+print( "_" * 50)
+print( "Scanning Target:" + target)
+print( "Scanning started at:" + str(datetime.now()))
+print("_" * 50)
+#scriviamo un blocco di codice che effettuerà il port scanning
+try:
+	for port in range(porta_iniziale,porta_finale):
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		#scriviamo una funzione per che imposterà il tempo per skippare da una porta all'altra evitando di sovvracaricare il server
+		socket.setdefaulttimeout(0.5)
+		#se il risultato del socket è = 0 allora la connessione è avvenuta con successo e di conseguenza ci stampera una stringa che indica la porta aperts
+		result = s.connect_ex((target,port))
+		if result == 0:		
+			print("[*] Port {} is open".format(port))
+		s.close()
+#richiamiamo le funzioni della libreria sys che andranno a gestire eventuali problemi/errori	
+except KeyboardInterrupt:
+	print("\n Exiting : ( " )
+	sys.exit()
+	
+except socket.error:
+	print("\ Host not responding : ( ")
+	sys.exit()	

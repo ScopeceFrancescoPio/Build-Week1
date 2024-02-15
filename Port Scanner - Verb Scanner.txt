@@ -1,0 +1,71 @@
+import pyfiglet
+import sys
+import socket
+from datetime import datetime
+import http.client
+
+ascii_banner = pyfiglet.figlet_format("\nPORT SCANNER - VERB SCANNER")
+print(ascii_banner)
+
+while True:
+    print("-----PER QUESTO PROGRAMMA L'UNICO INDIRIZZO FUNZIONALE E' 192.168.50.101-----\n")
+    host = input("Inserisci l'indirizzo IP del sistema target: ")
+
+    # Verifica se l'input contiene solo cifre e punti (formato IP)
+    if all(c.isdigit() or c == '.' for c in host) and host.count('.') == 3:
+        break
+    else:
+        print("Errore: Inserisci un indirizzo IP valido. Riprova.")   
+           
+print("Scansionamento indirizzo IP: " + host)
+
+portaIniziale = int(input("\nInserisci la porta di inizio range: ")) 
+portaFinale = int(input("Inserisci la porta di fine range: "))
+
+print("\nInizio scansione: " + str(datetime.now()))
+print("-" * 20)
+
+for port in range(portaIniziale,portaFinale):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    socket.setdefaulttimeout(0.5)
+
+    result = s.connect_ex((host,port))
+    if result == 0:
+       print("[*] Porta {} aperta".format(port))
+       s.close()
+print("-" * 20)
+print("Fine scansione: " + str(datetime.now()))
+
+while True:
+    port = input("\nInserisci la porta del sistema target: ")
+
+    # Verifica se l'input contiene solo cifre
+    if port.isdigit():
+        port = int(port)
+        break
+    else:
+        print("Errore: Inserisci un numero di porta valido. Riprova.")
+
+try:
+    connection = http.client.HTTPConnection(host, port)
+    payload = "Dati da inviare con il metodo POST"
+
+    connection1 = http.client.HTTPConnection(host, port)
+    connection1.request('GET', '/')
+    response1 = connection1.getresponse()
+    print("\n""   METODO     STATUS")
+    print("   GET       ",response1.status, response1.reason)   
+
+    connection.request('POST', '/', body=payload)
+    response = connection.getresponse()
+
+    print("   POST      ",response.status, response.reason)
+    connection2 = http.client.HTTPConnection(host, port)
+    connection2.request('HEAD', '/')
+    response2 = connection2.getresponse()
+    print("   HEAD      ",response2.status, response2.reason)   
+
+    connection.close()
+
+except ConnectionError:
+    print("Connessione fallita")

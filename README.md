@@ -1,4 +1,4 @@
-Il report e' presente nella cartella REPORT con il nome di Progetto_CS24CL01
+ ---------------- Il report e' Progetto_CS24CL01_BW1 ----------------
 
 Traccia:
 

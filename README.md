@@ -1,3 +1,5 @@
+Il report e' presente nella cartella REPORT con il nome di Progetto_CS24CL01
+
 Traccia:
 
 Siamo stati ingaggiati dalla compagnia Theta per eseguire delle valutazioni di sicurezza su alcune delle infrastrutture critiche dei loro data center.
